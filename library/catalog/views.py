@@ -28,3 +28,8 @@ class BookCreate(CreateView):
 
 class BookDetail(DetailView):
     model = Book
+
+
+class Authors(DetailView):
+    model = Author
+    fields = '__all__'

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 import uuid
@@ -36,7 +37,11 @@ class Book(models.Model):
 class Author(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    date_of_birth = models.DateField(null=True, blank=True)
+    # created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+
+    def save_model(self, request, obj, form, change):
+        obj.created_by = request.user
+        super().save(request, obj, form, change)
 
     class Meta:
         ordering = ['last_name', 'first_name']
@@ -61,7 +66,7 @@ class BookInstance(models.Model):
         ('r', 'Reserved')
     )
 
-    status = models.CharField(max_length=1, choices=LOAN_STATUS, blank=True, default='m')
+    status = models.CharField(max_length=1, choices=LOAN_STATUS, blank=True, default='a')
 
     class Meta:
         ordering = ['due_back']
