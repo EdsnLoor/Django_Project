@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.utils import http
 
 from .models import Book, Language, Author, BookInstance, Genre
 from django.views.generic import CreateView, DetailView, FormView
@@ -29,6 +30,11 @@ class BookDetail(DetailView):
     model = Book
 
 
-class AuthorCreate(CreateView):
+class AuthorCreate (CreateView):
     model = Author
-    fields = '__all__'
+    fields = ['first_name', 'last_name']
+
+    def create_author(self, form):
+        obj = form.save(commit=False)
+        obj.created_by = self.request.user
+        return super(AuthorCreate, self).create_author(form)

@@ -38,7 +38,7 @@ class Book(models.Model):
 class Author(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, null=True, on_delete=models.SET_NULL)
+    created_by = models.ForeignKey(User, default=1, null=True, on_delete=models.SET_NULL)
     created_date = models.DateField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
