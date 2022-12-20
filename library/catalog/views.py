@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.urls import reverse
+from django.utils import http
+
 from .models import Book, Language, Author, BookInstance, Genre
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, FormView
 
 
 # Create your views here.
@@ -28,3 +28,13 @@ class BookCreate(CreateView):
 
 class BookDetail(DetailView):
     model = Book
+
+
+class AuthorCreate (CreateView):
+    model = Author
+    fields = ['first_name', 'last_name']
+
+    def create_author(self, form):
+        obj = form.save(commit=False)
+        obj.created_by = self.request.user
+        return super(AuthorCreate, self).create_author(form)

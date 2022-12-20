@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 import uuid
@@ -30,13 +32,14 @@ class Book(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('book_detail', kwargs={'pk': self.pk})
+        return reverse('catalog:book_detail', kwargs={"pk": self.pk})
 
 
 class Author(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    date_of_birth = models.DateField(null=True, blank=True)
+    created_by = models.ForeignKey(User, default=1, null=True, on_delete=models.SET_NULL)
+    created_date = models.DateField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
         ordering = ['last_name', 'first_name']
@@ -45,7 +48,7 @@ class Author(models.Model):
         return reverse("author_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
-        return f"{self.last_name} , {self.first_name}"
+        return f"{self.last_name} , {self.first_name}, {self.created_by}, {self.created_date}"
 
 
 class BookInstance(models.Model):
@@ -61,7 +64,7 @@ class BookInstance(models.Model):
         ('r', 'Reserved')
     )
 
-    status = models.CharField(max_length=1, choices=LOAN_STATUS, blank=True, default='m')
+    status = models.CharField(max_length=1, choices=LOAN_STATUS, blank=True, default='a')
 
     class Meta:
         ordering = ['due_back']
