@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.urls import reverse
+
 from .models import Book, Language, Author, BookInstance, Genre
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, FormView
 
 
 # Create your views here.
@@ -30,6 +29,6 @@ class BookDetail(DetailView):
     model = Book
 
 
-class Authors(DetailView):
+class AuthorCreate(CreateView):
     model = Author
     fields = '__all__'

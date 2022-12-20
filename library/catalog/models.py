@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 import uuid
@@ -31,17 +32,14 @@ class Book(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('book_detail', kwargs={'pk': self.pk})
+        return reverse('catalog:book_detail', kwargs={"pk": self.pk})
 
 
 class Author(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    # created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
-
-    def save_model(self, request, obj, form, change):
-        obj.created_by = request.user
-        super().save(request, obj, form, change)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, null=True, on_delete=models.SET_NULL)
+    created_date = models.DateField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
         ordering = ['last_name', 'first_name']
@@ -50,7 +48,7 @@ class Author(models.Model):
         return reverse("author_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
-        return f"{self.last_name} , {self.first_name}"
+        return f"{self.last_name} , {self.first_name}, {self.created_by}, {self.created_date}"
 
 
 class BookInstance(models.Model):
